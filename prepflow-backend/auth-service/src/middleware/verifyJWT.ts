@@ -7,7 +7,9 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyJWT = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  const token = req.cookies?.accessToken as string | undefined
+  const authHeader = req.headers.authorization
+  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : undefined
+  const token = (req.cookies?.accessToken as string | undefined) || bearerToken
   if (!token) {
     res.status(401).json({ error: 'Access token required' })
     return

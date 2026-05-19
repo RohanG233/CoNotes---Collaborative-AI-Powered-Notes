@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from 'react'
 import { getMe, logout as apiLogout, refresh } from '@/api/auth'
+import { clearAuthTokens } from '@/api/axios'
 import type { User } from '@/types'
 
 interface AuthContextValue {
@@ -21,6 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = useCallback(async () => {
     try { await apiLogout() } catch { /* ignore */ }
+    clearAuthTokens()
     setUser(null)
   }, [])
 

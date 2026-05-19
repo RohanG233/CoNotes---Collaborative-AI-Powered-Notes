@@ -21,7 +21,8 @@ export function initSocket(httpServer: HttpServer): void {
   io.use(async (socket: AuthSocket, next) => {
     const cookieHeader = socket.handshake.headers?.cookie ?? ''
     const match = cookieHeader.match(/(?:^|;\s*)accessToken=([^;]+)/)
-    const token = match?.[1]
+    const authToken = typeof socket.handshake.auth?.token === 'string' ? socket.handshake.auth.token : undefined
+    const token = match?.[1] || authToken
     if (!token) return next(new Error('Authentication required'))
     try {
       const payload = jwt.verify(token, env.JWT_SECRET) as { id: string; name?: string }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
+import { getAccessToken } from '@/api/axios'
 import type { PresenceUser, NoteUpdatePayload, UserTypingPayload } from '@/types'
 
 interface UseSocketOptions {
@@ -16,6 +17,7 @@ export function useSocket({ noteId, onRemoteUpdate, onTyping }: UseSocketOptions
   useEffect(() => {
     const socket = io(import.meta.env.VITE_SOCKET_URL ?? 'http://localhost:3002', {
       withCredentials: true,
+      auth: { token: getAccessToken() },
       transports: ['websocket', 'polling'],
     })
 

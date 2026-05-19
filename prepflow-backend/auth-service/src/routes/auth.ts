@@ -75,7 +75,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     user.refreshToken = refreshToken
     await user.save()
     setBothCookies(res, accessToken, refreshToken)
-    res.json({ user: { id: user._id, name: user.name, email: user.email } })
+    res.json({ user: { id: user._id, name: user.name, email: user.email }, accessToken, refreshToken })
   } catch {
     res.status(500).json({ error: 'Login failed' })
   }
@@ -83,7 +83,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
 router.post('/refresh', async (req: Request, res: Response): Promise<void> => {
   try {
-    const token = req.cookies?.refreshToken
+    const token = req.cookies?.refreshToken || req.body?.refreshToken
     if (!token) {
       res.status(401).json({ error: 'Refresh token required' })
       return
@@ -104,7 +104,7 @@ router.post('/refresh', async (req: Request, res: Response): Promise<void> => {
     user.refreshToken = refreshToken
     await user.save()
     setBothCookies(res, accessToken, refreshToken)
-    res.json({ ok: true })
+    res.json({ ok: true, accessToken, refreshToken })
   } catch {
     res.status(500).json({ error: 'Token refresh failed' })
   }
@@ -112,7 +112,7 @@ router.post('/refresh', async (req: Request, res: Response): Promise<void> => {
 
 router.post('/logout', async (req: Request, res: Response): Promise<void> => {
   try {
-    const token = req.cookies?.refreshToken
+    const token = req.cookies?.refreshToken || req.body?.refreshToken
     if (token) {
       await User.findOneAndUpdate({ refreshToken: token }, { refreshToken: null })
     }
