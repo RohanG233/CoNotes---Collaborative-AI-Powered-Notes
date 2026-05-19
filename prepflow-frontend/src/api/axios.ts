@@ -14,7 +14,7 @@ api.interceptors.response.use(
     const original = error.config
 
     const url: string = original.url ?? ''
-    const isAuthEndpoint = url.includes('/api/auth/refresh') || url.includes('/api/auth/logout')
+    const isAuthEndpoint = url.includes('/api/auth/')
 
     if (error.response?.status !== 401 || original._retry || isAuthEndpoint) {
       return Promise.reject(error)
