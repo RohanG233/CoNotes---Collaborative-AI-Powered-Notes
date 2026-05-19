@@ -4,6 +4,25 @@ PrepFlow is a full-stack interview preparation app for writing notes, organizing
 
 The app is built with a React + Vite frontend and a TypeScript microservice backend. It demonstrates cookie-based authentication, an API gateway, MongoDB-backed notes, Socket.IO collaboration, and AI integration through OpenRouter.
 
+## Table of Contents
+
+| Section | What it covers |
+|---|---|
+| [What It Does](#what-it-does) | Main product features |
+| [Architecture](#architecture) | How the frontend, gateway, and services fit together |
+| [Tech Stack](#tech-stack) | Frameworks, libraries, and infrastructure |
+| [Repository Structure](#repository-structure) | Folder layout |
+| [Backend Services](#backend-services) | Service responsibilities and ports |
+| [Communication Flow](#communication-flow) | HTTP routing and Socket.IO usage |
+| [Authentication](#authentication) | Access tokens, refresh tokens, and cookies |
+| [API Reference](#api-reference) | Main backend endpoints |
+| [Realtime Events](#realtime-events) | Socket.IO events used for collaboration |
+| [Local Setup](#local-setup) | How to run locally |
+| [Production Readiness](#production-readiness) | Security and deployment checklist |
+| [Render Deployment](#render-deployment) | Render-specific deployment steps |
+| [Key Environment Variables](#key-environment-variables) | Required frontend and backend variables |
+| [Status](#status) | Current readiness and remaining work |
+
 ## What It Does
 
 - Create, edit, search, star, tag, and delete interview prep notes.
@@ -104,6 +123,62 @@ PrepFlow uses two JWTs stored in HttpOnly cookies:
 
 Access tokens are verified independently by protected services. Refresh tokens are stored in MongoDB so logout and refresh-token reuse detection work.
 
+## API Reference
+
+### Auth
+
+| Method | Path | Purpose |
+|---|---|---|
+| POST | `/api/auth/signup` | Create a new user account |
+| POST | `/api/auth/login` | Log in and set auth cookies |
+| POST | `/api/auth/refresh` | Rotate access and refresh tokens |
+| POST | `/api/auth/logout` | Clear cookies and invalidate refresh token |
+| GET | `/api/auth/me` | Return the current authenticated user |
+
+### Notes
+
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/api/notes` | List owned and shared notes |
+| POST | `/api/notes` | Create a note |
+| GET | `/api/notes/:id` | Fetch one note |
+| PATCH | `/api/notes/:id` | Autosave note updates |
+| DELETE | `/api/notes/:id` | Delete an owned note |
+| PATCH | `/api/notes/:id/star` | Toggle star on an owned note |
+| POST | `/api/notes/:id/collaborators` | Add a collaborator by email |
+
+### AI
+
+| Method | Path | Purpose |
+|---|---|---|
+| POST | `/api/ai` | Run `summarize`, `questions`, `explain`, or `feedback` |
+
+AI requests require a valid session and are rate limited per user.
+
+## Realtime Events
+
+The editor uses Socket.IO only after a note is opened.
+
+Client to server:
+
+| Event | Payload | Purpose |
+|---|---|---|
+| `joinRoom` | `noteId` | Join a note room after permission check |
+| `leaveRoom` | `noteId` | Leave a note room |
+| `noteUpdate` | `{ noteId, content }` | Broadcast live text changes |
+| `cursorMove` | `{ noteId, position }` | Broadcast cursor position |
+| `typing` | `{ noteId, isTyping }` | Broadcast typing state |
+
+Server to client:
+
+| Event | Payload | Purpose |
+|---|---|---|
+| `presence` | `PresenceUser[]` | Show active collaborators |
+| `noteUpdate` | `{ content, from, userId, ts }` | Receive another user's text update |
+| `cursorUpdate` | `{ userId, name, position }` | Receive cursor position |
+| `userTyping` | `{ userId, name, isTyping }` | Show typing indicator |
+| `error` | `{ message }` | Show socket permission or auth errors |
+
 ## Local Setup
 
 ### Prerequisites
@@ -189,7 +264,20 @@ Recommended before serious production use:
 - Add Redis for multi-instance Socket.IO rooms and presence.
 - Use asymmetric JWTs for larger multi-service deployments.
 
-## Render Deployment Summary
+Production deployment checklist:
+
+- Set `NODE_ENV=production` on all backend services.
+- Store secrets in the hosting provider, not in source code.
+- Use strong, different `JWT_SECRET` and `REFRESH_SECRET` values.
+- Keep `JWT_SECRET` identical across auth, notes, and AI services.
+- Set `CLIENT_URL` to the exact frontend origin with no trailing slash.
+- Use HTTPS so `secure` cross-site cookies work.
+- Confirm all `/health` endpoints respond successfully.
+- Run production builds before deploying.
+- Verify signup, login, refresh, logout, notes, sharing, realtime editing, and AI in the browser.
+- Add monitoring for 5xx errors and failed health checks.
+
+## Render Deployment
 
 Deploy these as separate Render Web Services:
 
