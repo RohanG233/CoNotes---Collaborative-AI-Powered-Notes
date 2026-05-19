@@ -21,6 +21,12 @@ const proxy = (target: string, pathPrefix: string) =>
     changeOrigin: true,
     pathRewrite: { [`^${pathPrefix}`]: '' },
     on: {
+      proxyRes: (proxyRes, _req, res) => {
+        const setCookie = proxyRes.headers['set-cookie']
+        if (setCookie) {
+          res.setHeader('set-cookie', setCookie)
+        }
+      },
       error: (_err, _req, res) => {
         (res as express.Response).status(502).json({ error: 'Service unavailable' })
       },
