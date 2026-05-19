@@ -326,6 +326,5 @@ VITE_API_URL=https://your-gateway-url
 VITE_SOCKET_URL=https://your-notes-service-url
 ```
 
-## Status
-
-The app is ready for local development and small demo deployment. The main remaining production work is around automated tests, observability, and multi-instance realtime scaling.
+## Demo
+https://conotes-frontend.onrender.com
