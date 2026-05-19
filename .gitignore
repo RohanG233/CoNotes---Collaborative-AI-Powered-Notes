@@ -1,0 +1,24 @@
+# Dependencies and builds
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# Environment files
+.env
+**/.env
+*.env.local
+**/*.env.local
+
+# Logs and local tooling
+*.log
+*.txt
+*.text
+.DS_Store
+.vscode/
+
+# Keep only README markdown files in git
+*.md
+**/*.md
+!README.md
+!**/README.md
