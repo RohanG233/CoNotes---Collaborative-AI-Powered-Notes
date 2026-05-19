@@ -258,10 +258,10 @@ Deploy these as separate Render Web Services:
 
 | Service | Root directory | Build command | Start command |
 |---|---|---|---|
-| auth-service | `prepflow-backend/auth-service` | `npm ci && npm run build` | `node dist/server.js` |
-| notes-service | `prepflow-backend/notes-service` | `npm ci && npm run build` | `node dist/server.js` |
-| ai-service | `prepflow-backend/ai-service` | `npm ci && npm run build` | `node dist/server.js` |
-| gateway | `prepflow-backend/gateway` | `npm ci && npm run build` | `node dist/server.js` |
+| auth-service | `prepflow-backend/auth-service` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| notes-service | `prepflow-backend/notes-service` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| ai-service | `prepflow-backend/ai-service` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| gateway | `prepflow-backend/gateway` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
 
 Set each service health check path to:
 
