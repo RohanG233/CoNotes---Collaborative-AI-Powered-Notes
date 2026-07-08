@@ -1,6 +1,6 @@
-# PrepFlow
+# CoNotes
 
-PrepFlow is a full-stack interview preparation app for writing notes, organizing study material, collaborating in real time, and generating AI-assisted study outputs from note content.
+CoNotes is a full-stack interview preparation app for writing notes, organizing study material, collaborating in real time, and generating AI-assisted study outputs from note content.
 
 The app is built with a React + Vite frontend and a TypeScript microservice backend. It demonstrates cookie-based authentication, API gateway, MongoDB-backed notes, Socket.IO collaboration, and AI integration through OpenRouter.
 
@@ -68,7 +68,7 @@ React frontend also connects directly to notes-service for Socket.IO.
 |   |-- src/
 |   |-- package.json
 |   `-- vite.config.ts
-|-- prepflow-backend/
+|-- CoNotes-backend/
 |   |-- auth-service/
 |   |-- notes-service/
 |   |-- ai-service/
@@ -114,7 +114,7 @@ Live editor events are sent through Socket.IO. Saving to MongoDB still happens t
 
 ## Authentication
 
-PrepFlow uses two JWTs stored in HttpOnly cookies:
+CoNotes uses two JWTs stored in HttpOnly cookies:
 
 | Token        |   Lifetime | Purpose                                      |
 | ------------ | ---------: | -------------------------------------------- |
