@@ -1,0 +1,575 @@
+@import './tokens.css';
+
+/* View Transitions API — required by AnimatedThemeToggler */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100dvh;
+  /* Smooth colour transitions when theme changes */
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, textarea {
+  font-family: inherit;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition), background-color 250ms ease, color 250ms ease;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--color-primary);
+}
+
+/* Light theme: inputs need explicit override for placeholder */
+[data-theme='light'] input::placeholder,
+[data-theme='light'] textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+textarea { resize: vertical; min-height: 120px; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ── ShineBorder animation ──────────────────────────────────────── */
+@keyframes shine {
+  0%   { background-position: 0% 0%; }
+  50%  { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+.shine-border-anim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+  will-change: background-position;
+  animation: shine var(--shine-duration, 14s) infinite linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine-border-anim { animation: none; }
+}
+
+/* ── RippleButton ───────────────────────────────────────────────── */
+@keyframes rippling {
+  0%   { transform: scale(0); opacity: 0.4; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.ripple-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: var(--space-3) var(--space-6);
+  transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+.ripple-btn:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+.ripple-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ripple-btn-label {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ripple-btn-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+
+.ripple-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.35;
+  transform: scale(0);
+  animation: rippling var(--ripple-duration, 600ms) ease-out forwards;
+}
+
+.ripple-btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ripple-circle  { animation: none; }
+  .ripple-btn-spinner { animation: none; }
+}
+
+/* ── AuroraText ─────────────────────────────────────────────────── */
+@keyframes aurora {
+  0%   { background-position: 0% 50%;   }
+  25%  { background-position: 50% 100%; }
+  50%  { background-position: 100% 50%; }
+  75%  { background-position: 50% 0%;   }
+  100% { background-position: 0% 50%;   }
+}
+
+.aurora-text-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.aurora-text-anim {
+  display: inline-block;
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: aurora 8s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-text-anim { animation: none; }
+}
+
+/* ── RetroGrid ──────────────────────────────────────────────────── */
+.retro-grid-root {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* ensure layout children sit above the grid */
+.retro-grid-root ~ * {
+  position: relative;
+  z-index: 1;
+}
+
+/* fallback visibility per theme */
+.retro-grid-fallback-light { display: block; }
+.dark .retro-grid-fallback-light { display: none; }
+.retro-grid-fallback-dark  { display: none; }
+.dark .retro-grid-fallback-dark  { display: block; }
+
+/* ── RainbowButton ──────────────────────────────────────────────── */
+/* Colour stops — same oklch values as MagicUI source */
+:root {
+  --rainbow-1: oklch(66.2% 0.225 25.9);
+  --rainbow-2: oklch(60.4% 0.26 302);
+  --rainbow-3: oklch(69.6% 0.165 251);
+  --rainbow-4: oklch(80.2% 0.134 225);
+  --rainbow-5: oklch(90.7% 0.231 133);
+  --rainbow-speed: 2s;
+}
+
+@keyframes rainbow-shift {
+  0%   { background-position: 0%; }
+  100% { background-position: 200%; }
+}
+
+.rainbow-btn {
+  /* layout */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  overflow: visible;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: var(--radius-md);
+
+  /* The rainbow trick:
+     Three layered backgrounds on one element —
+     1. Solid dark fill  (padding-box)     → button face colour
+     2. Fade-to-transparent strip (border-box) → keeps border soft
+     3. Animated rainbow gradient (border-box) → the glowing border
+  */
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#121213, #121213),
+    linear-gradient(#121213 50%, rgba(18,18,19,0.6) 80%, rgba(18,18,19,0)),
+    linear-gradient(90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+  background-size: 200%;
+  background-clip: padding-box, border-box, border-box;
+  background-origin: border-box;
+  color: #fff;
+  animation: rainbow-shift var(--rainbow-speed) infinite linear;
+  transition: opacity var(--transition), filter var(--transition);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Light mode: swap dark fill for white */
+[data-theme='light'] .rainbow-btn {
+  background:
+    linear-gradient(#fff, #fff),
+    linear-gradient(#fff 50%, rgba(255,255,255,0.6) 80%, rgba(0,0,0,0)),
+    linear-gradient(90deg,
+      var(--rainbow-1),
+      var(--rainbow-5),
+      var(--rainbow-3),
+      var(--rainbow-4),
+      var(--rainbow-2)
+    );
+  background-size: 200%;
+  background-clip: padding-box, border-box, border-box;
+  background-origin: border-box;
+  color: #111;
+  animation: rainbow-shift var(--rainbow-speed) infinite linear;
+}
+
+/* Glowing blur shadow beneath the button */
+.rainbow-btn::before {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1;
+  width: 60%;
+  height: 20%;
+  background: linear-gradient(90deg,
+    var(--rainbow-1),
+    var(--rainbow-5),
+    var(--rainbow-3),
+    var(--rainbow-4),
+    var(--rainbow-2)
+  );
+  background-size: 200%;
+  filter: blur(0.75rem);
+  animation: rainbow-shift var(--rainbow-speed) infinite linear;
+}
+
+.rainbow-btn:hover:not(:disabled) { filter: brightness(1.1); }
+.rainbow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: none;
+}
+.rainbow-btn:disabled::before { animation: none; }
+
+.rainbow-btn-label {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.rainbow-btn-spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rainbow-btn,
+  .rainbow-btn::before,
+  .rainbow-btn-spinner { animation: none; }
+}
+
+/* ── ExpandableSearchBar (21st.dev) ────────────────────────────── */
+.search-bar-root {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.search-bar-toggle {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+.search-bar-toggle:hover {
+  color: var(--color-primary);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+}
+
+.search-bar-form {
+  position: absolute;
+  top: 0;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  transition: border-color var(--transition);
+}
+.search-bar-form:focus-within {
+  border-color: var(--color-primary);
+}
+.search-bar-right { left: 0; }
+.search-bar-left  { right: 0; }
+
+.search-bar-icon-left {
+  position: absolute;
+  left: 12px;
+  z-index: 10;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Right-side icon — used when expanding left */
+.search-bar-icon-right {
+  position: absolute;
+  right: 12px;
+  z-index: 10;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.search-bar-input-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* expand-right: icon on left → pad left */
+.search-bar-input,
+.search-bar-input-right {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 0.5rem 0 2.25rem !important;
+  font-size: var(--text-sm) !important;
+  color: var(--color-text) !important;
+  outline: none !important;
+  white-space: nowrap;
+  overflow-x: auto;
+  box-shadow: none !important;
+}
+
+/* expand-left: icon on right → pad right, leave left open */
+.search-bar-input-left {
+  padding: 0 2.25rem 0 0.75rem !important;
+  text-align: left;
+}
+
+/* Placeholder — expand right */
+.search-bar-placeholder,
+.search-bar-placeholder-right {
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 2.25rem;
+  right: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  user-select: none;
+  text-align: left;
+}
+
+/* Placeholder — expand left: sits left-padded, away from right icon */
+.search-bar-placeholder-left {
+  left: 0.75rem;
+  right: 2.25rem;
+  text-align: left;
+}
+
+.search-bar-submit {
+  height: 40px;
+  width: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--color-text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color var(--transition);
+}
+.search-bar-submit:hover { color: var(--color-primary); }
+
+/* ── LogoutDialog ───────────────────────────────────────────────── */
+.logout-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.logout-dialog {
+  position: fixed;
+  z-index: 201;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) !important;
+  width: min(92vw, 380px);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.logout-dialog-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-10) var(--space-8) var(--space-8);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.logout-dialog-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.logout-dialog-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.logout-dialog-desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.logout-dialog-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-2);
+}
+
+/* Yes — filled danger red */
+.logout-dialog-yes {
+  width: 100%;
+  justify-content: center;
+  background: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+.logout-dialog-yes:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* No — ghost style */
+.logout-dialog-no {
+  width: 100%;
+  justify-content: center;
+  background: var(--color-surface-2) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text-muted) !important;
+  font-weight: 500 !important;
+}
+.logout-dialog-no:hover:not(:disabled) {
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+  background: var(--color-surface) !important;
+}

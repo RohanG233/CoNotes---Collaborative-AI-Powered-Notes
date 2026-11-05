@@ -64,7 +64,7 @@ React frontend also connects directly to notes-service for Socket.IO.
 
 ```text
 .
-|-- prepflow-frontend/
+|-- conotes-frontend/
 |   |-- src/
 |   |-- package.json
 |   `-- vite.config.ts
@@ -192,7 +192,7 @@ Server to client:
 Create `.env` files from the examples in each backend service:
 
 ```bash
-cd prepflow-backend
+cd conotes-backend
 cp auth-service/.env.example auth-service/.env
 cp notes-service/.env.example notes-service/.env
 cp ai-service/.env.example ai-service/.env
@@ -208,23 +208,23 @@ Important:
 Run each backend service in a separate terminal:
 
 ```bash
-cd prepflow-backend/auth-service && npm install && npm run dev
-cd prepflow-backend/notes-service && npm install && npm run dev
-cd prepflow-backend/ai-service && npm install && npm run dev
-cd prepflow-backend/gateway && npm install && npm run dev
+cd conotes-backend/auth-service && npm install && npm run dev
+cd conotes-backend/notes-service && npm install && npm run dev
+cd conotes-backend/ai-service && npm install && npm run dev
+cd conotes-backend/gateway && npm install && npm run dev
 ```
 
 Or run the backend with Docker Compose:
 
 ```bash
-cd prepflow-backend
+cd conotes-backend
 cp .env.example .env
 docker-compose up --build
 ```
 
 ### Frontend
 
-Create `prepflow-frontend/.env`:
+Create `conotes-frontend/.env`:
 
 ```env
 VITE_API_URL=http://localhost:3000
@@ -234,7 +234,7 @@ VITE_SOCKET_URL=http://localhost:3002
 Then run:
 
 ```bash
-cd prepflow-frontend
+cd conotes-frontend
 npm install
 npm run dev
 ```
@@ -283,10 +283,10 @@ Deploy these as separate Render Web Services:
 
 | Service       | Root directory                   | Build command             | Start command         |
 | ------------- | -------------------------------- | ------------------------- | --------------------- |
-| auth-service  | `prepflow-backend/auth-service`  | `npm ci --include=dev && npm run build` | `node dist/server.js` |
-| notes-service | `prepflow-backend/notes-service` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
-| ai-service    | `prepflow-backend/ai-service`    | `npm ci --include=dev && npm run build` | `node dist/server.js` |
-| gateway       | `prepflow-backend/gateway`       | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| auth-service  | `conotes-backend/auth-service`  | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| notes-service | `conotes-backend/notes-service` | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| ai-service    | `conotes-backend/ai-service`    | `npm ci --include=dev && npm run build` | `node dist/server.js` |
+| gateway       | `conotes-backend/gateway`       | `npm ci --include=dev && npm run build` | `node dist/server.js` |
 
 Set each health check path to `/health`.
 
