@@ -1,5 +1,7 @@
 # CoNotes
 
+<img src="./assets/CoNotes.jpeg" alt="CoNotes" width="800" />
+
 CoNotes is a full-stack interview preparation app for writing notes, organizing study material, collaborating in real time, and generating AI-assisted study outputs from note content.
 
 The app is built with a React + Vite frontend and a TypeScript microservice backend. It demonstrates cookie-based authentication, API gateway, MongoDB-backed notes, Socket.IO collaboration, and AI integration through OpenRouter.
