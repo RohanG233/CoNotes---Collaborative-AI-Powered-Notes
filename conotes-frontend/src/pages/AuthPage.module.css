@@ -31,6 +31,16 @@
   background: var(--color-surface-2);
 }
 
+/* ── Home button — pinned top-left ──────────────────────────────── */
+.homeBtn {
+  position: fixed;
+  top: var(--space-5);
+  left: var(--space-5);
+  z-index: 100;
+  font-size: var(--text-sm) !important;
+  padding: var(--space-2) var(--space-5) !important;
+}
+
 /* ── Left hero panel ────────────────────────────────────────────── */
 .hero {
   display: flex;

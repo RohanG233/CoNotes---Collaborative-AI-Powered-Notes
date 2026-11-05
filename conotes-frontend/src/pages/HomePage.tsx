@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import Shuffle from '@/components/ui/gsap/ScrollTrigger'
 import { RippleButton } from '@/components/ui/ripple-button'
 import { RainbowButton } from '@/components/ui/rainbow-button'
+import { ShimmerButton } from '@/components/ui/shimmer-button'
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler'
 import { RetroGrid } from '@/components/ui/retro-grid'
 import { DiaTextReveal } from '@/components/ui/magic-ui/dia-text-reveal'
@@ -53,13 +54,16 @@ export function HomePage() {
             duration={500}
             className={styles.themeToggle}
           />
-          <RippleButton
-            rippleColor="rgba(108,99,255,0.35)"
+          <ShimmerButton
+            shimmerColor="rgba(108,99,255,0.9)"
+            background="rgba(15,15,15,0.9)"
+            borderRadius="var(--radius-full)"
+            shimmerDuration="2.5s"
             className={styles.navLogin}
             onClick={() => navigate('/login')}
           >
             Log in
-          </RippleButton>
+          </ShimmerButton>
           <RainbowButton
             className={styles.navRegister}
             onClick={() => navigate('/signup')}

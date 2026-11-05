@@ -573,3 +573,100 @@ textarea { resize: vertical; min-height: 120px; }
   color: var(--color-primary) !important;
   background: var(--color-surface) !important;
 }
+
+/* ── ShimmerButton ──────────────────────────────────────────────── */
+@keyframes shimmer-slide {
+  to { transform: translateX(100%); }
+}
+
+@keyframes spin-around {
+  0%           { transform: translateZ(0) rotate(0deg); }
+  15%, 35%     { transform: translateZ(0) rotate(90deg); }
+  65%, 85%     { transform: translateZ(0) rotate(270deg); }
+  100%         { transform: translateZ(0) rotate(360deg); }
+}
+
+.shimmer-btn {
+  position: relative;
+  z-index: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--shimmer-radius, 100px);
+  background: var(--shimmer-bg, rgba(0,0,0,1));
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  padding: var(--space-3) var(--space-6);
+  white-space: nowrap;
+  transition: transform 300ms ease-in-out;
+  -webkit-tap-highlight-color: transparent;
+}
+.shimmer-btn:active:not(:disabled) { transform: translateY(1px); }
+.shimmer-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* spark container — blurred conic gradient travelling across the button */
+.shimmer-btn-spark {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: visible;
+  filter: blur(2px);
+  animation: shimmer-slide var(--shimmer-speed, 3s) ease-in-out infinite alternate;
+}
+
+.shimmer-btn-spin {
+  position: absolute;
+  inset: -100%;
+  width: 200%;
+  aspect-ratio: 1;
+  background: conic-gradient(
+    from calc(270deg - 45deg),
+    transparent 0,
+    var(--shimmer-color, #ffffff) 90deg,
+    transparent 90deg
+  );
+  animation: spin-around calc(var(--shimmer-speed, 3s) * 2) infinite linear;
+}
+
+/* text/content sits above everything */
+.shimmer-btn-content {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* inner top-edge glow */
+.shimmer-btn-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 -8px 10px rgba(255,255,255,0.12);
+  transition: box-shadow 300ms ease-in-out;
+  pointer-events: none;
+}
+.shimmer-btn:hover .shimmer-btn-highlight {
+  box-shadow: inset 0 -6px 10px rgba(255,255,255,0.25);
+}
+.shimmer-btn:active .shimmer-btn-highlight {
+  box-shadow: inset 0 -10px 10px rgba(255,255,255,0.25);
+}
+
+/* solid bg fill — sits between spark and content */
+.shimmer-btn-bg {
+  position: absolute;
+  inset: var(--shimmer-cut, 0.05em);
+  z-index: -2;
+  border-radius: inherit;
+  background: var(--shimmer-bg, rgba(0,0,0,1));
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-btn-spark { animation: none; }
+  .shimmer-btn-spin  { animation: none; }
+}

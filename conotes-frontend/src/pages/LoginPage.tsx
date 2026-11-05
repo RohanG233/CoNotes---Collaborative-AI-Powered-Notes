@@ -7,6 +7,7 @@ import { DiaTextReveal } from '@/components/ui/magic-ui/dia-text-reveal'
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler'
 import { ShineBorder } from '@/components/ui/shine-border'
 import { RippleButton } from '@/components/ui/ripple-button'
+import { ShimmerButton } from '@/components/ui/shimmer-button'
 import styles from './AuthPage.module.css'
 
 // Dark-mode colours: light purples that pop on dark backgrounds
@@ -54,6 +55,17 @@ export function LoginPage() {
   return (
     <main className={styles.page}>
       <AnimatedThemeToggler variant="circle" duration={500} className={styles.themeToggle} />
+      <ShimmerButton
+        onClick={() => navigate('/')}
+        shimmerColor="rgba(108,99,255,0.9)"
+        background="rgba(15,15,15,0.85)"
+        borderRadius="var(--radius-full)"
+        shimmerDuration="2.5s"
+        className={styles.homeBtn}
+        aria-label="Back to home"
+      >
+        ← Home
+      </ShimmerButton>
 
       {/* ── Left: branding ── */}
       <div className={styles.hero}>

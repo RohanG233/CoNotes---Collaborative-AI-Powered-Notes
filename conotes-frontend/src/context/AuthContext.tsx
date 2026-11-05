@@ -6,6 +6,7 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { getMe, logout as apiLogout, refresh } from "@/api/auth";
 import { clearAuthTokens, getRefreshToken } from "@/api/axios";
 import type { User } from "@/types";
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const login = useCallback((userData: User) => {
     setUser(userData);
@@ -35,7 +37,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     clearAuthTokens();
     setUser(null);
-  }, []);
+    navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     const handleForceLogout = () => logout();
